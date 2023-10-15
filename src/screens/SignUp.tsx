@@ -14,13 +14,11 @@ import BackgroundImg from '@assets/background.png';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 
-import { AuthNavigatorRouteProps } from '@routes/auth.routes';
+export function SignUp() {
+  const navigation = useNavigation();
 
-export function SignIn() {
-  const navigation = useNavigation<AuthNavigatorRouteProps>();
-
-  function handleNewAccount() {
-    navigation.navigate('signup');
+  function handleGoBack() {
+    navigation.goBack();
   }
 
   return (
@@ -35,6 +33,7 @@ export function SignIn() {
       >
         <Image
           source={BackgroundImg}
+          defaultSource={BackgroundImg}
           alt="Pessoas treinando"
           resizeMode="contain"
           position="absolute"
@@ -55,8 +54,14 @@ export function SignIn() {
             mb={6}
             fontFamily="heading"
           >
-            Acesse sua conta
+            Crie sua conta
           </Heading>
+
+          <Input
+            placeholder="Nome"
+            autoCapitalize="words"
+            autoCorrect={false}
+          />
 
           <Input
             placeholder="E-mail"
@@ -70,25 +75,15 @@ export function SignIn() {
             secureTextEntry
           />
 
-          <Button title="Acessar" />
+          <Button title="Criar e acessar" />
         </Center>
 
-        <Center mt={24}>
-          <Text
-            color="gray.100"
-            fontSize="sm"
-            mb={3}
-            fontFamily="body"
-          >
-            Ainda não tem acesso?
-          </Text>
-
-          <Button
-            title="Criar conta"
-            variant="outline"
-            onPress={handleNewAccount}
-          />
-        </Center>
+        <Button
+          title="Voltar para o login"
+          variant="outline"
+          mt={24}
+          onPress={handleGoBack}
+        />
       </VStack>
     </ScrollView>
   );
