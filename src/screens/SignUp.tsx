@@ -7,6 +7,7 @@ import {
   VStack,
 } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
+import { useForm, Controller } from 'react-hook-form';
 
 import LogoSvg from '@assets/logo.svg';
 import BackgroundImg from '@assets/background.png';
@@ -14,11 +15,24 @@ import BackgroundImg from '@assets/background.png';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 
+type FormDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirm: string;
+}
+
 export function SignUp() {
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>();
+
   const navigation = useNavigation();
 
   function handleGoBack() {
     navigation.goBack();
+  }
+
+  function handleSignUp({ name, email, password, password_confirm }: FormDataProps) {
+    console.log({ name, email, password, password_confirm });
   }
 
   return (
@@ -26,11 +40,7 @@ export function SignUp() {
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack
-        flex={1}
-        px={10}
-        pb={16}
-      >
+      <VStack flex={1} px={10} pb={16}>
         <Image
           source={BackgroundImg}
           defaultSource={BackgroundImg}
@@ -57,25 +67,79 @@ export function SignUp() {
             Crie sua conta
           </Heading>
 
-          <Input
-            placeholder="Nome"
-            autoCapitalize="words"
-            autoCorrect={false}
+          <Controller
+            control={control}
+            name="name"
+            rules={{
+              required: 'Informe o nome'
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Nome"
+                autoCapitalize="words"
+                autoCorrect={false}
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.name?.message}
+              />
+            )}
           />
 
-          <Input
-            placeholder="E-mail"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
+          <Controller
+            control={control}
+            name="email"
+            rules={{
+              required: 'Informe o e-mail',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'E-mail inválido'
+              }
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="E-mail"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.email?.message}
+              />
+            )}
           />
 
-          <Input
-            placeholder="Senha"
-            secureTextEntry
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Senha"
+                secureTextEntry
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
           />
 
-          <Button title="Criar e acessar" />
+          <Controller
+            control={control}
+            name="password_confirm"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Confirme a senha"
+                secureTextEntry
+                onChangeText={onChange}
+                value={value}
+                onSubmitEditing={handleSubmit(handleSignUp)}
+                returnKeyType="send"
+              />
+            )}
+          />
+
+          <Button
+            title="Criar e acessar"
+            onPress={handleSubmit(handleSignUp)}
+          />
         </Center>
 
         <Button
