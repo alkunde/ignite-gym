@@ -1,11 +1,17 @@
 import { useTheme, Box } from 'native-base';
+import { Platform } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+
+import { useAuth } from '@hooks/useAuth';
 
 import { AuthRoutes } from './auth.routes';
 import { AppRoutes } from './app.routes';
 
 export function Routes() {
   const { colors } = useTheme();
+  const { user } = useAuth();
+
+  console.log(Platform.OS, " USUÁRIO LOGADO =>", user);
 
   const theme = DefaultTheme;
   theme.colors.background = colors.gray[700];
