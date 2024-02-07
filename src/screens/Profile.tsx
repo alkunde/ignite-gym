@@ -12,6 +12,8 @@ import { Input } from '@components/Input';
 import { ScreenHeader } from '@components/ScreenHeader';
 import { UserPhoto } from '@components/UserPhoto';
 import { useAuth } from '@hooks/useAuth';
+import { AppError } from '@utils/AppError';
+import { api } from '@services/api';
 
 const PHOTO_SIZE = 33;
 
@@ -44,11 +46,12 @@ const profileSchema = yup.object({
 });
 
 export function Profile() {
+  const [isLoading, setIsLoading] = useState(false);
   const [photoLoading, setPhotoLoading] = useState(false);
   const [userPhoto, setUserPhoto] = useState('https://github.com/alkunde.png');
 
   const toast = useToast();
-  const { user } = useAuth();
+  const { user, updateUserProfile } = useAuth();
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
     defaultValues: {
       name: user.name,
@@ -90,7 +93,33 @@ export function Profile() {
   }
 
   async function handleProfileUpdate(data: FormDataProps) {
-    console.log(data);
+    try {
+      setIsLoading(true);
+
+      const userUpdated = user;
+      userUpdated.name = data.name;
+
+      await api.put('/users', data);
+
+      await updateUserProfile(userUpdated);
+
+      toast.show({
+        title: 'Perfil atualizado com sucesso',
+        placement: 'top',
+        bgColor: 'green.500',
+      });
+    } catch(error) {
+      const isAppError = error instanceof AppError;
+
+      const title = isAppError ? error.message : "Falha na atualização do usuário. Tente novamente mais tarde"
+      toast.show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -207,6 +236,7 @@ export function Profile() {
             title="Atualizar"
             mt={4}
             onPress={handleSubmit(handleProfileUpdate)}
+            isLoading={isLoading}
           />
         </VStack>
       </ScrollView>
