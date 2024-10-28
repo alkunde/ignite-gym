@@ -1,159 +1,54 @@
-import { useState } from 'react';
-import {
-  Center,
-  Heading,
-  Image,
-  ScrollView,
-  Text,
-  VStack,
-  useToast,
-} from 'native-base';
-import { useNavigation } from '@react-navigation/native';
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import { Center, Heading, Image, ScrollView, Text, VStack } from "@gluestack-ui/themed";
 
-import LogoSvg from '@assets/logo.svg';
-import BackgroundImg from '@assets/background.png';
+import BackgroundImg from "@assets/background.png";
+import Logo from "@assets/logo.svg";
 
-import { Button } from '@components/Button';
-import { Input } from '@components/Input';
+import { Button } from "@components/button";
+import { Input } from "@components/input";
 
-import { useAuth } from '@hooks/useAuth';
-
-import { AuthNavigatorRouteProps } from '@routes/auth.routes';
-import { AppError } from '@utils/AppError';
-
-type FormData = {
-  email: string;
-  password: string;
-}
-
-const signInSchema = yup.object({
-  email: yup.string().required('Informe o e-mail').email('E-mail inválido'),
-  password: yup.string().required('Informe a senha').min(6, 'A senha deve ter pelo menos 6 dígitos'),
-})
-
-export function SignIn() {
-  const { signIn } = useAuth();
-  const navigation = useNavigation<AuthNavigatorRouteProps>();
-  const toast = useToast();
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: yupResolver(signInSchema)
-  });
-
-  function handleNewAccount() {
-    navigation.navigate('signup');
-  }
-
-  async function handleSignIn({ email, password }: FormData) {
-    try {
-      setIsLoading(true);
-      await signIn(email, password);
-    } catch(error) {
-      const isAppError = error instanceof AppError;
-
-      const title = isAppError ? error.message : 'Não foi possível entrar. Tente novamente mais tarde';
-      toast.show({
-        title,
-        placement: 'top',
-        bgColor: 'red.500',
-      });
-
-      setIsLoading(false);
-    }
-  }
-
+export function Signin() {
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack
-        flex={1}
-        px={10}
-        pb={16}
-      >
+      <VStack flex={1} bg="$gray700">
         <Image
+          w="$full"
+          h={624}
           source={BackgroundImg}
           defaultSource={BackgroundImg}
           alt="Pessoas treinando"
-          resizeMode="contain"
           position="absolute"
         />
 
-        <Center my={24}>
-          <LogoSvg />
+        <VStack flex={1} px="$10" pb="$16">
+          <Center my="$24">
+            <Logo />
 
-          <Text color="gray.100" fontSize="sm">
-            Treine sua mente e o seu corpo
-          </Text>
-        </Center>
+            <Text color="$gray100" fontSize="$sm">
+              Treine sua mente e o seu corpo.
+            </Text>
+          </Center>
 
-        <Center>
-          <Heading
-            color="gray.100"
-            fontSize="xl"
-            mb={6}
-            fontFamily="heading"
-          >
-            Acesse sua conta
-          </Heading>
+          <Center gap={4}>
+            <Heading color="$gray100">Acesse a conta</Heading>
 
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange } }) => (
-              <Input
-                placeholder="E-mail"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={onChange}
-                errorMessage={errors.email?.message}
-              />
-            )}
-          />
+            <Input placeholder="E-mail" keyboardType="email-address" autoCapitalize="none" />
 
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange } }) => (
-              <Input
-                placeholder="Senha"
-                secureTextEntry
-                onChangeText={onChange}
-                errorMessage={errors.password?.message}
-              />
-            )}
-          />
+            <Input placeholder="Senha" secureTextEntry />
 
-          <Button
-            title="Acessar"
-            onPress={handleSubmit(handleSignIn)}
-            isLoading={isLoading}
-          />
-        </Center>
+            <Button title="Acessar" />
+          </Center>
 
-        <Center mt={24}>
-          <Text
-            color="gray.100"
-            fontSize="sm"
-            mb={3}
-            fontFamily="body"
-          >
-            Ainda não tem acesso?
-          </Text>
+          <Center flex={1} justifyContent="flex-end" mt="$4">
+            <Text color="$gray100" fontSize="$sm" mb="$3" fontFamily="$body">
+              Ainda não tem acesso?
+            </Text>
 
-          <Button
-            title="Criar conta"
-            variant="outline"
-            onPress={handleNewAccount}
-          />
-        </Center>
+            <Button title="Criar conta" variant="outline" />
+          </Center>
+        </VStack>
       </VStack>
     </ScrollView>
   );

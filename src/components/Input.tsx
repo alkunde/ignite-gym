@@ -1,39 +1,28 @@
-import { Input as NativeInput, IInputProps, FormControl } from 'native-base';
+import { ComponentProps } from "react";
+import { Input as GluestackInput, InputField } from "@gluestack-ui/themed";
 
-type Props = IInputProps & {
-  errorMessage?: string | null;
-}
+type Props = ComponentProps<typeof InputField>;
 
-export function Input({ errorMessage = null, isInvalid, ...rest }: Props) {
-  const invalid = !!errorMessage || isInvalid;
-
+export function Input({ ...rest }: Props) {
   return (
-    <FormControl isInvalid={invalid} mb={4}>
-      <NativeInput
-        bg="gray.700"
-        h={14}
-        px={4}
-        borderWidth={0}
-        fontSize="md"
-        color="white"
-        fontFamily="body"
-        placeholderTextColor="gray.300"
-        isInvalid={invalid}
-        _invalid={{
-          borderWidth: 1,
-          borderColor: "red.500",
-        }}
-        _focus={{
-          bg: "gray.700",
-          borderWidth: 1,
-          borderColor: "green.500",
-        }}
+    <GluestackInput
+      bg="$gray700"
+      h="$14"
+      px="$2"
+      borderWidth="$1"
+      borderColor="$gray700"
+      borderRadius="$md"
+      $focus={{
+        borderWidth: 1,
+        borderColor: "$green500"
+      }}
+    >
+      <InputField
+        color="$white"
+        fontFamily="$body"
+        placeholderTextColor="$gray300"
         {...rest}
       />
-
-      <FormControl.ErrorMessage>
-        {errorMessage}
-      </FormControl.ErrorMessage>
-    </FormControl>
+    </GluestackInput>
   );
 }
