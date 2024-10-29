@@ -8,8 +8,7 @@ import { GluestackUIProvider } from "@gluestack-ui/themed";
 
 import { Loading } from "@components/loading";
 
-import { Signin } from "@screens/signin";
-import { Signup } from "@screens/signup";
+import { Routes } from "@routes/index";
 
 import { config } from "./config/gluestack-ui.config";
 
@@ -24,11 +23,7 @@ export default function App() {
   return (
     <GluestackUIProvider config={config}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
-      {fontsLoaded ? (
-        <Signup />
-      ) : (
-        <Loading />
-      )}
+      {fontsLoaded ? <Routes /> : <Loading />}
     </GluestackUIProvider>
   );
 }
