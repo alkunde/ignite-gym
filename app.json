@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "ignite-gym",
+    "name": "Ignite Gym",
     "slug": "ignite-gym",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,7 +21,13 @@
       }
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photoPermission": "The app accesses your photos to let you share with your friends."
+        }
+      ]
     ]
   }
 }
