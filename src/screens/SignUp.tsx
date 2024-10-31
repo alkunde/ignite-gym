@@ -1,4 +1,13 @@
-import { Center, Heading, Image, ScrollView, Text, VStack } from "@gluestack-ui/themed";
+import { useState } from "react";
+import {
+  Center,
+  Heading,
+  Image,
+  ScrollView,
+  Text,
+  useToast,
+  VStack,
+} from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,8 +18,12 @@ import Logo from "@assets/logo.svg";
 
 import { Button } from "@components/button";
 import { Input } from "@components/input";
+import { ToastMessage } from "@components/toast-message";
 
+import { useAuth } from "@hooks/use-auth";
 import { AuthNavigatorRouteProps } from "@routes/auth.routes";
+import { api } from "@services/api";
+import { AppError } from "@utils/app-error";
 
 type FormDataProps = {
   name: string;
@@ -34,21 +47,47 @@ const signUpSchema = yup.object({
 
 export function Signup() {
   const navigation = useNavigation<AuthNavigatorRouteProps>();
+  const toast = useToast();
+  const { signIn } = useAuth();
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
     resolver: yupResolver(signUpSchema),
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   function handleGoBack() {
     navigation.goBack();
   }
 
-  function handleSignUp({
+  async function handleSignUp({
     name,
     email,
     password,
-    password_confirm
   }: FormDataProps) {
+    try {
+      setIsLoading(true);
+      await api.post("/users", { name, email, password });
+
+      await signIn(email, password);
+    } catch (error) {
+      setIsLoading(false);
+
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : "Não foi possível criar a conta";
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title={title}
+            onClose={() => toast.close(id)}
+          />
+        )
+      });
+    }
   }
 
   return (
@@ -139,6 +178,7 @@ export function Signup() {
             <Button
               title="Criar e acessar"
               onPress={handleSubmit(handleSignUp)}
+              isLoading={isLoading}
             />
           </Center>
 

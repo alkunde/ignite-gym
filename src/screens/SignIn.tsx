@@ -1,4 +1,13 @@
-import { Center, Heading, Image, ScrollView, Text, VStack } from "@gluestack-ui/themed";
+import { useState } from "react";
+import {
+  Center,
+  Heading,
+  Image,
+  ScrollView,
+  Text,
+  useToast,
+  VStack,
+} from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,8 +18,12 @@ import Logo from "@assets/logo.svg";
 
 import { Button } from "@components/button";
 import { Input } from "@components/input";
+import { ToastMessage } from "@components/toast-message";
+
+import { useAuth } from "@hooks/use-auth";
 
 import { AuthNavigatorRouteProps } from "@routes/auth.routes";
+import { AppError } from "@utils/app-error";
 
 type FormDataProps = {
   email: string;
@@ -23,16 +36,43 @@ const signInSchema = yup.object({
 });
 
 export function Signin() {
+  const { signIn } = useAuth();
+  const toast = useToast();
+
   const navigation = useNavigation<AuthNavigatorRouteProps>();
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
     resolver: yupResolver(signInSchema),
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   function handleNewAccount() {
     navigation.navigate("signUp");
   }
 
-  function handleSignIn({ email, password }: FormDataProps) {
+  async function handleSignIn({ email, password }: FormDataProps) {
+    try {
+      setIsLoading(true);
+      await signIn(email, password);
+    } catch (error) {
+      console.log(error);
+      const isAppError = error instanceof AppError;
+
+      const title = isAppError ? error.message : "Não foi possível entrar. Tente novamente";
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title={title}
+            onClose={() => toast.close(id)}
+          />
+        )
+      });
+
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -96,6 +136,7 @@ export function Signin() {
             <Button
               title="Acessar"
               onPress={handleSubmit(handleSignIn)}
+              isLoading={isLoading}
             />
           </Center>
 
