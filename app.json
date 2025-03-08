@@ -12,13 +12,21 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.akunde.ignitegym",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.akunde.ignitegym"
     },
     "plugins": [
       "expo-font",
@@ -28,6 +36,11 @@
           "photoPermission": "The app accesses your photos to let you share with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4770184b-6a41-49ef-b771-bb11b1fd9a81"
+      }
+    }
   }
 }

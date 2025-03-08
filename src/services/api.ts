@@ -3,7 +3,8 @@ import axios from "axios";
 import { AppError } from "@utils/app-error";
 
 const api = axios.create({
-  baseURL: "http://10.0.0.119:3333",
+  // baseURL: "http://192.168.0.185:3333",
+  baseURL: "https://ignite-gym.free.mockoapp.net/",
 });
 
 api.interceptors.response.use(response => response, error => {
