@@ -12,7 +12,7 @@ import { AppError } from "@utils/app-error";
 
 import { AppNavigatorRouteProps } from "@routes/app.routes";
 import { ExerciseDTO } from "@dtos/exercise-dto";
-import { Loading } from "@components/loading";
+import { Loading } from "@components/Loading";
 
 const EXERCISES: ExerciseDTO[] = [
   {

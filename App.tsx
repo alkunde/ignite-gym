@@ -6,7 +6,7 @@ import {
 } from "@expo-google-fonts/roboto";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 
-import { Loading } from "@components/loading";
+import { Loading } from "@components/Loading";
 
 import { AuthContextProvider } from "@contexts/auth-context"; 
 

@@ -4,7 +4,7 @@ import { Box } from "@gluestack-ui/themed";
 import { AppRoutes } from "./app.routes";
 import { AuthRoutes } from "./auth.routes";
 
-import { Loading } from "@components/loading";
+import { Loading } from "@components/Loading";
 import { useAuth } from "@hooks/use-auth";
 
 import { gluestackUIConfig } from "../../config/gluestack-ui.config";
