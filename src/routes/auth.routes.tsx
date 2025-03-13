@@ -1,7 +1,7 @@
 import { createNativeStackNavigator, NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import { Signin } from "@screens/Signin";
-import { Signup } from "@screens/Signup";
+import { Signin } from "../screens/sign-in";
+import { Signup } from "../screens/sign-up";
 
 type AuthRoutes = {
   signIn: undefined;
